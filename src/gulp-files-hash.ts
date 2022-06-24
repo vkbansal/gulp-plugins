@@ -6,13 +6,28 @@ import Vinyl from "vinyl";
 
 const hashesMap = new Map();
 
-/**
- * @param {Number} options.hashLength      Length of the hash. Default is 6.
- * @param {Number} options.hashFile        Path to output a file containing the map of original file paths to hashed file paths.
- * @param {Number} options.relativeSrcPath Path to be used as base path while generating hash file.
- * @param {Number} options.algorithm       Algorithm to be used for hashing. Default is "sha256".
- */
-export default function gulpFilesHash(options = {}) {
+export interface GulpFilesHashOptions {
+  /**
+   *  Algorithm to be used for hashing.
+   *  @default "sha256"
+   */
+  algorithm?: string;
+  /**
+   *  Length of the hash.
+   *  @default 6
+   */
+  hashLength?: number;
+  /**
+   * Path to output a file containing the map of original file paths to hashed file paths.
+   */
+  hashFile?: string;
+  /**
+   * A function to customize the hash file before writing to disk
+   */
+  customizeHashFile?(hash: Record<string, string>): Record<string, string>;
+}
+
+export default function gulpFilesHash(options: GulpFilesHashOptions = {}) {
   const stream = new Stream.Transform({ objectMode: true });
 
   stream._transform = function (file, buffer, done) {
@@ -35,29 +50,31 @@ export default function gulpFilesHash(options = {}) {
     const ext = path.extname(file.relative);
     const relative = file.relative.replace(ext, `.${hash}${ext}`);
     const newPath = path.join(file.base, relative);
-    file.path = newPath;
 
     if (options.hashFile) {
-      const mapPath = path.relative(
-        options.relativeSrcPath || process.cwd(),
-        file.path
-      );
+      const mapPath = path.relative(process.cwd(), file.path);
 
       hashesMap.set(mapPath, relative);
     }
+
+    file.path = newPath;
 
     done(null, file);
   };
 
   stream._flush = function (done) {
     if (options.hashFile) {
+      let contents = Object.fromEntries([...hashesMap.entries()]);
+
+      if (typeof options.customizeHashFile === "function") {
+        contents = options.customizeHashFile(contents);
+      }
+
       const file = new Vinyl({
         cwd: process.cwd(),
         base: ".",
         path: options.hashFile,
-        contents: Buffer.from(
-          JSON.stringify(Object.fromEntries([...hashesMap.entries()]), null, 2)
-        ),
+        contents: Buffer.from(JSON.stringify(contents, null, 2)),
       });
       this.push(file);
 

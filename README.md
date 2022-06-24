@@ -21,8 +21,8 @@ yarn add -D @vkbansal/gulp-plugins sass
 
 ## Usage
 
-```
-import { gulpSass, gulpIf, gulpFilesHash  } from '@vkbansal/gulp-plugins'
+```js
+import { gulpSass, gulpIf, gulpFilesHash } from "@vkbansal/gulp-plugins";
 ```
 
 ## License

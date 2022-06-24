@@ -1,0 +1,14 @@
+{
+  "compilerOptions": {
+    "strict": true,
+    "baseUrl": "./src",
+    "target": "ES2022",
+    "module": "ESNext",
+    "allowJs": false,
+    "sourceMap": false,
+    "allowSyntheticDefaultImports": true,
+    "moduleResolution": "Node",
+    "outDir": "./dist"
+  },
+  "include": ["src"]
+}

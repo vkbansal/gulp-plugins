@@ -6,13 +6,17 @@
     "name": "Vivek Kumar Bansal",
     "email": "contact@vkbansal.me"
   },
+  "main": "index.js",
   "license": "MIT",
   "files": [
-    "plugins",
+    "dist",
     "index.js"
   ],
   "scripts": {
-    "test": "mocha tests"
+    "test": "mocha tests",
+    "prebuild": "rm -rf dist",
+    "build": "tsc",
+    "prepublishOnly": "npm run build"
   },
   "optionalDependencies": {
     "sass": "^1.53.0"
@@ -21,11 +25,14 @@
     "access": "public"
   },
   "dependencies": {
+    "@types/vinyl": "^2.0.6",
     "plugin-error": "^1.0.1",
     "vinyl": "^2.2.1"
   },
   "devDependencies": {
+    "@types/node": "^18.0.0",
     "mocha": "^10.0.0",
-    "sass": "^1.53.0"
+    "sass": "^1.53.0",
+    "typescript": "^4.7.4"
   }
 }
