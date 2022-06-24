@@ -8,7 +8,8 @@
     "sourceMap": false,
     "allowSyntheticDefaultImports": true,
     "moduleResolution": "Node",
-    "outDir": "./dist"
+    "outDir": "./dist",
+    "declaration": true
   },
   "include": ["src"]
 }
