@@ -17,6 +17,9 @@
   "optionalDependencies": {
     "sass": "^1.53.0"
   },
+  "publishConfig": {
+    "access": "public"
+  },
   "dependencies": {
     "plugin-error": "^1.0.1",
     "vinyl": "^2.2.1"
