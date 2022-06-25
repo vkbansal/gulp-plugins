@@ -73,7 +73,7 @@ export default function gulpFilesHash(options: GulpFilesHashOptions = {}) {
       if (typeof options.customizeHashFile === "function") {
         contents = options.customizeHashFile(hashes);
       } else {
-        contents = JSON.stringify(contents, null, 2);
+        contents = JSON.stringify(hashes, null, 2);
       }
 
       const file = new Vinyl({
