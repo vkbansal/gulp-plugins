@@ -24,7 +24,7 @@ export interface GulpFilesHashOptions {
   /**
    * A function to customize the hash file before writing to disk
    */
-  customizeHashFile?(hash: Record<string, string>): Record<string, string>;
+  customizeHashFile?(hash: Record<string, string>): string;
 }
 
 export default function gulpFilesHash(options: GulpFilesHashOptions = {}) {
@@ -64,17 +64,23 @@ export default function gulpFilesHash(options: GulpFilesHashOptions = {}) {
 
   stream._flush = function (done) {
     if (options.hashFile) {
-      let contents = Object.fromEntries([...hashesMap.entries()]);
+      const hashes: Record<string, string> = Object.fromEntries([
+        ...hashesMap.entries(),
+      ]);
+
+      let contents = "";
 
       if (typeof options.customizeHashFile === "function") {
-        contents = options.customizeHashFile(contents);
+        contents = options.customizeHashFile(hashes);
+      } else {
+        contents = JSON.stringify(contents, null, 2);
       }
 
       const file = new Vinyl({
         cwd: process.cwd(),
         base: ".",
         path: options.hashFile,
-        contents: Buffer.from(JSON.stringify(contents, null, 2)),
+        contents: Buffer.from(contents),
       });
       this.push(file);
 
